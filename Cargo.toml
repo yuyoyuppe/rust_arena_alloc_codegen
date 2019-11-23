@@ -1,21 +1,13 @@
 
 [package]
-name = "arena_memcpy"
+name = "rust_arena_alloc_codegen"
 version = "0.1.0"
 authors = ["yuyoyuppe <a.yuyoyuppe@gmail.com>"]
 edition = "2018"
-panic = "abort"
 [profile.release]
 panic = "abort"
-# lto=true
 codegen-units=1
 opt-level=3
 
-[build]
-rustflags = ["-C", "target-cpu=native"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 typed-arena = "*"
-

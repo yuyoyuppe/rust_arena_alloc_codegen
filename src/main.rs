@@ -2,15 +2,20 @@
 https://bugs.llvm.org/show_bug.cgi?id=42794
 https://bugs.llvm.org/show_bug.cgi?id=40011#c1
 https://github.com/rust-lang/rust/issues/56333
+https://github.com/rust-lang/rust/issues/32966
 
 // similar cpp implementation and ir output
-https://gcc.godbolt.org/z/BhZ6tF
+https://gcc.godbolt.org/z/D4qm_N
 
 cargo build --release
 cargo asm rust_arena_alloc_codegen::main --rust
 cargo llvm-ir rust_arena_alloc_codegen::main --rust
+
+cargo rustc --release -- --emit=llvm-ir
+S:\llvm-project\build\RelWithDebInfo\bin\llc.exe -O3 S:\rust_arena_alloc_codegen\target\release\deps\rust_arena_alloc_codegen-ad6249f928ea7b75.ll
 */
 
+#![no_std]
 #![allow(dead_code)]
 
 use typed_arena::Arena;
@@ -26,10 +31,10 @@ impl Default for Big {
 }
 
 #[inline(always)]
-fn optimized() {
+fn optimized() -> u8 {
     let arena = Arena::new();
     let v = arena.alloc(Big::default());
-    println!("do not optimize {}", v.storage[123]);
+    v.storage[123]
 }
 
 #[inline(always)]
@@ -38,12 +43,21 @@ fn not_optimized(arena: &typed_arena::Arena<Big>) -> &mut Big {
     v
 }
 
-fn main() {
+#[derive(Debug)]
+struct MyError { }
+
+fn main() -> Result<(), MyError> {
 
     // not_optimized.asm
-    // let arena = Arena::new();
-    // println!("do not optimize {}", not_optimized(&arena).storage[123]);
+    let arena = Arena::new();
+    let v = not_optimized(&arena).storage[123];
 
     // optimized.asm
-    optimized()
+    // let v = optimized();
+
+    // poor man's optimization prevention
+    match v {
+        6 => Err(MyError{}),
+        _ => Ok(())
+    }
 }

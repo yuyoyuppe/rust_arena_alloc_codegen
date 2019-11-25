@@ -12,7 +12,7 @@ cargo asm rust_arena_alloc_codegen::main --rust
 cargo llvm-ir rust_arena_alloc_codegen::main --rust
 
 cargo rustc --release -- --emit=llvm-ir
-S:\llvm-project\build\RelWithDebInfo\bin\llc.exe -O3 S:\rust_arena_alloc_codegen\target\release\deps\rust_arena_alloc_codegen-ad6249f928ea7b75.ll
+ 
 */
 
 #![no_std]
